@@ -1,9 +1,9 @@
 import express from 'express';
-let router = express.Router();
+let indexRouter = express.Router();
 
 /* GET home page. */
-router.get('/', (req, res, next) => {
+indexRouter.get('/', (req, res, next) => {
   res.render('index', { title: 'Test Api Server' });
 });
 
-module.exports = router;
+export {indexRouter};

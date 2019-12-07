@@ -7,6 +7,6 @@
     "helpers/babel.js",
     "helpers/reporter.js"
   ],
-  "stopSpecOnExpectationFailure": false,
+  "stopSpecOnExpectationFailure": true,
   "random": false
 }

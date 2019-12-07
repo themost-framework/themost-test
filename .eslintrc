@@ -14,7 +14,8 @@
         "beforeAll": false,
         "after": false,
         "expect": false,
-        "spyOn": false
+        "spyOn": false,
+        "jasmine":false
     },
     "extends": "eslint:recommended",
     "rules": {
@@ -24,6 +25,10 @@
         "no-unused-vars": "warn",
         "no-var": [
             "error"
+        ],
+        "quotes": [
+            "error",
+            "single"
         ],
         "strict": [
             2,

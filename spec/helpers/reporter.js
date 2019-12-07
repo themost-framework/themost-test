@@ -6,3 +6,4 @@ jasmine.getEnv().addReporter(new SpecReporter({  // add jasmine-spec-reporter
         displayPending: true
     }
 }));
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;

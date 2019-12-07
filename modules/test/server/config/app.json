@@ -28,7 +28,7 @@
     ],
     "adapters": [
         {
-            "name": "development",
+            "name": "test",
             "invariantName": "sqlite",
             "default": true,
             "options": {
