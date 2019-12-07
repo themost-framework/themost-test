@@ -10,7 +10,11 @@
         "describe": false,
         "it": false,
         "before": false,
-        "after": false
+        "beforeEach": false,
+        "beforeAll": false,
+        "after": false,
+        "expect": false,
+        "spyOn": false
     },
     "extends": "eslint:recommended",
     "rules": {

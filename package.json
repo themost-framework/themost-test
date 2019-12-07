@@ -28,9 +28,11 @@
     "@types/lodash": "^4.14.116",
     "@types/passport": "^1.0.0",
     "babel-eslint": "^10.0.1",
+    "es6-promisify": "^6.0.2",
     "eslint": "^5.6.1",
     "jasmine": "^3.5.0",
     "jasmine-spec-reporter": "^4.2.1",
+    "node-fetch": "^2.6.0",
     "nodemon": "^1.19.0",
     "rimraf": "^2.6.3",
     "rollup-plugin-auto-external": "^2.0.0",
@@ -40,5 +42,7 @@
     "rollup-plugin-node-resolve": "^5.2.0",
     "typescript": "^3.7.3"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@types/node-fetch": "^2.5.4"
+  }
 }

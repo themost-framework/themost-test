@@ -7,4 +7,4 @@
  */
 
 export {app} from './app';
-export {server} from './standalone';
+export * from './serve';
