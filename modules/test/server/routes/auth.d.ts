@@ -8,7 +8,7 @@
 import {Authenticator} from "passport";
 import {Router} from "express";
 
-declare interface TokenReqBody {
+export declare interface TokenReqBody {
     client_id: string;
     client_secret: string;
     username: string;
@@ -16,8 +16,16 @@ declare interface TokenReqBody {
     grant_type: string;
     scope: string;
 }
-declare interface TokenInfoReqBody {
+export declare interface TokenInfoReqBody {
     token: string;
+}
+
+export declare interface TokenResBody {
+    access_token: string;
+    token_type: string;
+    expires_in: number;
+    refresh_token: string;
+    scope: string;
 }
 
 declare function authRouter(): Router;

@@ -1,5 +1,6 @@
 import {app, serve, getServerAddress} from '../modules/test/server';
 import {promisify} from 'es6-promisify';
+import {URL, URLSearchParams} from 'url';
 import fetch from 'node-fetch';
 
 describe('app', function () {
