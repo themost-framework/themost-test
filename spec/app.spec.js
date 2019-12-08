@@ -2,8 +2,6 @@ import {app, serve, getServerAddress} from '../modules/test/server';
 import {promisify} from 'es6-promisify';
 import fetch from 'node-fetch';
 
-
-
 describe('app', function () {
 
     it('should get app', () => {
@@ -21,18 +19,14 @@ describe('app', function () {
         // close server
         await promisify(server.close).bind(server)();
     });
-    it('should get /api/$metadata', async () => {
+    it('should get /api/$metadata error', async () => {
         // serve
         const server = await serve(app);
         const base = getServerAddress(server);
         // get metadata
         const response = await fetch(new URL('/api/$metadata', base));
         expect(response).toBeTruthy();
-        expect(response.ok).toBeTruthy();
-        const body = await response.text();
-        expect(body).toBeTruthy();
-        const contentType = response.headers.get('content-type');
-        expect(contentType).toContain('application/xml');
+        expect(response.ok).toBeFalsy();
         // close server
         await promisify(server.close).bind(server)();
     });
@@ -45,6 +39,7 @@ describe('app', function () {
         const response = await fetch(new URL('/auth/token', base), {
             method: 'POST',
             headers: {
+                'Accept': 'application/json',
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
             body: new URLSearchParams({
@@ -70,6 +65,7 @@ describe('app', function () {
         let response = await fetch(new URL('/auth/token', base), {
             method: 'POST',
             headers: {
+                'Accept': 'application/json',
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
             body: new URLSearchParams({
@@ -87,6 +83,7 @@ describe('app', function () {
         response = await fetch(new URL('/auth/token_info', base), {
             method: 'POST',
             headers: {
+                'Accept': 'application/json',
                 'Authorization': `Basic ${new Buffer('9165351833584149:hTgqFBUhCfHs/quf/wnoB+UpDSfUusKA').toString('base64')}`,
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
@@ -110,6 +107,7 @@ describe('app', function () {
         let response = await fetch(new URL('/auth/token', base), {
             method: 'POST',
             headers: {
+                'Accept': 'application/json',
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
             body: new URLSearchParams({
@@ -127,6 +125,7 @@ describe('app', function () {
         response = await fetch(new URL('/auth/me', base), {
             method: 'GET',
             headers: {
+                'Accept': 'application/json',
                 'Authorization': `Bearer ${token.access_token}`,
                 'Content-Type': 'application/x-www-form-urlencoded'
             }

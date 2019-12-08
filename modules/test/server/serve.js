@@ -47,7 +47,7 @@ export function serve(app, port, host) {
             return reject(err);
             });
         server.on('close', () => {
-            log(`Stopping the test api server from accepting new connections.`);
+            log('Stopping the test api server from accepting new connections.');
         });
         server.on('listening', () => {
             let addr = server.address();

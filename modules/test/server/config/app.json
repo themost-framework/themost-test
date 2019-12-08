@@ -19,11 +19,6 @@
             "name": "SQLite Data Adapter",
             "invariantName": "sqlite",
             "type": "@themost/sqlite"
-        },
-        {
-            "name": "Memory Data Adapter",
-            "invariantName": "memory",
-            "type": "@themost/mem"
         }
     ],
     "adapters": [

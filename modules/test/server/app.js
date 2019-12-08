@@ -67,7 +67,8 @@ app.use('/', indexRouter);
 app.use('/auth/', authRouter());
 
 // use @themost/express service router
-app.use('/api/', serviceRouter);
+// noinspection JSCheckFunctionSignatures
+app.use('/api/', passport.authenticate('bearer', { session: false }), serviceRouter);
 
 // error handler
 app.use((err, req, res, next) => {

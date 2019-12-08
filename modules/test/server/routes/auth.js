@@ -6,20 +6,80 @@
  * found in the LICENSE file at https://themost.io/license
  */
 import express from 'express';
-import {Args, HttpBadRequestError, HttpForbiddenError, HttpNotFoundError, HttpUnauthorizedError} from '@themost/common';
+import {
+    Args,
+    HttpBadRequestError,
+    HttpForbiddenError,
+    HttpNotFoundError, HttpTokenExpiredError,
+    HttpTokenRequiredError,
+    HttpUnauthorizedError
+} from '@themost/common';
+import passport from 'passport';
+import BearerStrategy from 'passport-http-bearer';
 const User = require('../models/user-model');
 
-/**
- * @param {Authenticator} passport
- */
-function authorize(passport) {
-
-}
-
+// noinspection JSUnusedGlobalSymbols
 /**
  *
  */
 function authRouter() {
+
+    // passport bearer authorization strategy
+    // https://github.com/jaredhanson/passport-http-bearer#usage
+    // noinspection JSCheckFunctionSignatures
+    passport.use(new BearerStrategy({
+            passReqToCallback: true
+        },
+        /**
+         * @param {Request} req
+         * @param {string} token
+         * @param {Function} done
+         */
+        function(req, token, done) {
+            if (token == null) {
+                // throw 499 Token Required error
+                return done(new HttpTokenRequiredError());
+            }
+            // get token info
+            // noinspection JSUnresolvedFunction
+            req.context.model('AccessToken').where('access_token').equal(token).silent().getItem().then(info => {
+                if (info == null) {
+                    return done(new HttpTokenExpiredError());
+                }
+                if (new Date(info.expires).getTime() < new Date().getTime()) {
+                    return done(new HttpTokenExpiredError());
+                }
+                // find user from token info
+                // noinspection JSUnresolvedFunction
+                return req.context.model('User').where('name').equal(info.username).silent().getItem().then( user => {
+                    // user cannot be found and of course cannot be authenticated (throw forbidden error)
+                    if (user == null) {
+                        return done(new HttpForbiddenError());
+                    }
+                    // check if user has enabled attribute
+                    if (user.hasOwnProperty('enabled') && !user.enabled) {
+                        //if user.enabled is off throw forbidden error
+                        return done(new HttpForbiddenError('Access is denied. User account is disabled.'));
+                    }
+                    // otherwise return user data
+                    return done(null, {
+                        'name': user.name,
+                        'authenticationProviderKey': user.id,
+                        'authenticationType': 'Bearer',
+                        'authenticationToken': token,
+                        'authenticationScope': info.scope
+                    });
+                });
+            }).catch(err => {
+                if (err && err.statusCode === 404) {
+                    return done(new HttpTokenRequiredError('Token not found'));
+                }
+                // otherwise continue with error
+                return done(err);
+            });
+        }
+    ));
+
     let router = express.Router();
 
     router.post('/token', async function postToken (req, res, next) {
@@ -182,4 +242,4 @@ function authRouter() {
     return router;
 }
 
-export {authorize, authRouter};
+export {authRouter};
