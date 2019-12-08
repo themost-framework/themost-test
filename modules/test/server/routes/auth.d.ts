@@ -20,6 +20,14 @@ export declare interface TokenInfoReqBody {
     token: string;
 }
 
+export declare interface TokenInfoResBody {
+    active: string;
+    scope?: string;
+    client_id?: string;
+    username?: string;
+    exp?: number;
+}
+
 export declare interface TokenResBody {
     access_token: string;
     token_type: string;

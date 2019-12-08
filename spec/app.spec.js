@@ -1,4 +1,4 @@
-import {app, serve, getServerAddress} from '../modules/test/server';
+import {app, serve, getServerAddress, getToken, getTokenInfo} from '../modules/test/server';
 import {promisify} from 'es6-promisify';
 import {URL, URLSearchParams} from 'url';
 import fetch from 'node-fetch';
@@ -135,6 +135,44 @@ describe('app', function () {
         const me = await response.json();
         expect(me).toBeTruthy();
         expect(me.name).toBe('alexis.rees@example.com');
+        // close server
+        await promisify(server.close).bind(server)();
+    });
+
+    it('should use getToken()', async () => {
+        // serve
+        const server = await serve(app);
+        const server_uri = getServerAddress(server);
+        // get token
+        let token = await getToken(server_uri, 'alexis.rees@example.com', 'secret');
+        expect(token).toBeTruthy();
+        expect(token.access_token).toBeTruthy();
+        // unauthorized
+        try {
+            token = await getToken(server_uri, 'alexis.rees@example.com', 'test');
+            expect(token).toBeFalsy();
+        }
+        catch (err) {
+            expect(err).toBeTruthy();
+            expect(err.statusCode).toBe(401);
+        }
+        // close server
+        await promisify(server.close).bind(server)();
+    });
+
+    it('should use getTokenInfo()', async () => {
+        // serve
+        const server = await serve(app);
+        const server_uri = getServerAddress(server);
+        // get token
+        let token = await getToken(server_uri, 'alexis.rees@example.com', 'secret');
+        expect(token).toBeTruthy();
+        let tokenInfo = await getTokenInfo(server_uri, token.access_token);
+        expect(tokenInfo).toBeTruthy();
+        expect(tokenInfo.active).toBeTruthy();
+        // active false
+        tokenInfo = await getTokenInfo(server_uri, 'test-token');
+        expect(tokenInfo.active).toBeFalsy();
         // close server
         await promisify(server.close).bind(server)();
     });

@@ -7,3 +7,4 @@
  */
 export {app} from './app';
 export * from './serve';
+export * from './utils';

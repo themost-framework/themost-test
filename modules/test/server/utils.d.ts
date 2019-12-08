@@ -5,8 +5,9 @@
  * Use of this source code is governed by an BSD-3-Clause license that can be
  * found in the LICENSE file at https://themost.io/license
  */
-import {TokenResBody} from "./routes/auth";
+import {TokenInfoResBody, TokenResBody} from "./routes/auth";
 
-declare function testAuthenticate(server_uri: string, username: string, password: string): Promise<TokenResBody>;
+declare function getToken(server_uri: string, username: string, password: string): Promise<TokenResBody>;
+declare function getTokenInfo(server_uri: string, token: string): Promise<TokenInfoResBody>;
 
-export {testAuthenticate};
+export {getToken, getTokenInfo};
