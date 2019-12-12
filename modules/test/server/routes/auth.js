@@ -51,7 +51,7 @@ function authRouter() {
                 }
                 // find user from token info
                 // noinspection JSUnresolvedFunction
-                return req.context.model('User').where('name').equal(info.username).silent().getItem().then( user => {
+                return req.context.model('User').where('name').equal(info.user_id).silent().getItem().then( user => {
                     // user cannot be found and of course cannot be authenticated (throw forbidden error)
                     if (user == null) {
                         return done(new HttpForbiddenError());
