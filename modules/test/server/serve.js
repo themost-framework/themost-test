@@ -33,7 +33,7 @@ function normalizePort(val) {
  * @param {*=} host
  * @return Promise<Server>
  */
-export function serve(app, port, host) {
+export function serveApplication(app, port, host) {
 
     return new Promise((resolve, reject) => {
         // get port from environment

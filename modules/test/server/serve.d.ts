@@ -8,5 +8,5 @@
 import {Server} from "http";
 import {Application} from "express";
 
-export declare function serve(app: Application, port?: any, host?: any ): Promise<Server>;
+export declare function serveApplication(app: Application, port?: any, host?: any ): Promise<Server>;
 export declare function getServerAddress(server: Server):string;

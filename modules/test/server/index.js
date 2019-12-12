@@ -6,6 +6,6 @@
  * found in the LICENSE file at https://themost.io/license
  */
 
-export {app} from './app';
+export * from './app';
 export * from './serve';
 export * from './utils';
