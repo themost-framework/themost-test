@@ -1,4 +1,4 @@
-import {app, serve, getServerAddress, getToken, getTokenInfo} from '../modules/test/server';
+import {getApplication, serveApplication, getServerAddress, getToken, getTokenInfo} from '../modules/test/server';
 import {promisify} from 'es6-promisify';
 import {URL, URLSearchParams} from 'url';
 import fetch from 'node-fetch';
@@ -6,11 +6,11 @@ import fetch from 'node-fetch';
 describe('app', function () {
 
     it('should get app', () => {
-        expect(app).toBeTruthy();
+        expect(getApplication()).toBeTruthy();
     });
     it('should serve app', async () => {
         // serve
-        const server = await serve(app);
+        const server = await serveApplication(getApplication());
         expect(server).toBeTruthy();
         // get address info
         const addressInfo = server.address();
@@ -22,7 +22,7 @@ describe('app', function () {
     });
     it('should get /api/$metadata error', async () => {
         // serve
-        const server = await serve(app);
+        const server = await serveApplication(getApplication());
         const base = getServerAddress(server);
         // get metadata
         const response = await fetch(new URL('/api/$metadata', base));
@@ -34,7 +34,7 @@ describe('app', function () {
 
     it('should post /auth/token', async () => {
         // serve
-        const server = await serve(app);
+        const server = await serveApplication(getApplication());
         const base = getServerAddress(server);
         // get metadata
         const response = await fetch(new URL('/auth/token', base), {
@@ -60,8 +60,8 @@ describe('app', function () {
     });
     it('should post /auth/token_info', async () => {
         // serve
-        const server = await serve(app);
-        const base = getServerAddress(server);
+        const liveServer = await serveApplication(getApplication());
+        const base = getServerAddress(liveServer);
         // get metadata
         let response = await fetch(new URL('/auth/token', base), {
             method: 'POST',
@@ -97,12 +97,12 @@ describe('app', function () {
         expect(token_info).toBeTruthy();
         expect(token_info.active).toBeTruthy();
         // close server
-        await promisify(server.close).bind(server)();
+        await promisify(liveServer.close).bind(liveServer)();
     });
 
     it('should post /auth/me', async () => {
         // serve
-        const server = await serve(app);
+        const server = await serveApplication(getApplication());
         const base = getServerAddress(server);
         // get metadata
         let response = await fetch(new URL('/auth/token', base), {
@@ -141,7 +141,7 @@ describe('app', function () {
 
     it('should use getToken()', async () => {
         // serve
-        const server = await serve(app);
+        const server = await serveApplication(getApplication());
         const server_uri = getServerAddress(server);
         // get token
         let token = await getToken(server_uri, 'alexis.rees@example.com', 'secret');
@@ -162,7 +162,7 @@ describe('app', function () {
 
     it('should use getTokenInfo()', async () => {
         // serve
-        const server = await serve(app);
+        const server = await serveApplication(getApplication());
         const server_uri = getServerAddress(server);
         // get token
         let token = await getToken(server_uri, 'alexis.rees@example.com', 'secret');

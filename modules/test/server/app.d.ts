@@ -6,5 +6,4 @@
  * found in the LICENSE file at https://themost.io/license
  */
 import {Application} from 'express';
-declare const app: Application;
-export {app};
+export declare function getApplication(): Application;
