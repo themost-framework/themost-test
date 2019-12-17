@@ -58,4 +58,4 @@ async function getTokenInfo(server_uri, token) {
     throw new HttpError(response.status);
 }
 
-export {getToken, getTokenInfo};
+export {getToken, getTokenInfo, TEST_CLIENT_ID, TEST_CLIENT_SECRET};

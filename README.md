@@ -52,3 +52,49 @@ Create a jasmine test spec and start testing api server
             expect(response.ok).toBeTruthy();
           });
         });
+
+#### Karma Testing
+
+Test api server may be used alongside with [karma](https://github.com/karma-runner/karma) for testing.
+
+Create karma-test-api-server.js:
+
+    // karma-test-api-server.js
+    const {getApplication, serveApplication, getServerAddress} = require('@themost/test');
+    const { URL } = require('url');
+    function serveKarmaTestApiServer(proxies) {
+        const app = getApplication();
+        return serveApplication(app).then( function(liveServer) {
+            const serverAddress = getServerAddress(liveServer);
+            Object.assign(proxies, {
+                '/api/': new URL('/api/', serverAddress).toString(),
+                '/auth/': new URL('/auth/', serverAddress).toString()
+            });
+        });
+    }
+    
+    serveKarmaTestApiServer.$inject = ['config.proxies'];
+    
+    module.exports =  {
+        'framework:api': [
+            'factory',
+            serveKarmaTestApiServer
+        ]
+    };
+
+and modify karma.conf.js to include test api server
+
+    // karma.conf.js
+    module.exports = function (config) {
+      config.set({
+        basePath: '',
+        frameworks: [..., ..., 'api'],
+        plugins: [
+          require('./karma-test-api-server'),
+          ...
+        ],
+        client: {
+          clearContext: false
+        }
+        ...
+        

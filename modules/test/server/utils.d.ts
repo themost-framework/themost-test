@@ -9,5 +9,6 @@ import {TokenInfoResBody, TokenResBody} from "./routes/auth";
 
 declare function getToken(server_uri: string, username: string, password: string): Promise<TokenResBody>;
 declare function getTokenInfo(server_uri: string, token: string): Promise<TokenInfoResBody>;
-
-export {getToken, getTokenInfo};
+declare const TEST_CLIENT_ID: string;
+declare const TEST_CLIENT_SECRET: string;
+export {getToken, getTokenInfo, TEST_CLIENT_ID, TEST_CLIENT_SECRET};
