@@ -1,5 +1,4 @@
-import {EdmMapping} from '@themost/data/odata';
-import {DataObject} from '@themost/data/data-object';
+import {EdmMapping, DataObject} from '@themost/data';
 
 /**
  * @class
