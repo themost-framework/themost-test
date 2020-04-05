@@ -1,6 +1,6 @@
 {
   "name": "@themost/test",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "MOST Web Framework Test Api Server",
   "repository": "https://github.com/themost-framework/themost-test.git",
   "author": "Kyriakos Barbounakis<k.barbounakis@gmail.com>",
@@ -11,8 +11,8 @@
     "@themost/common": "^2.5.0",
     "@themost/data": "^2.5.0",
     "@themost/query": "^2.5.0",
-    "@themost/express": "^1.5.3",
-    "@themost/sqlite": "^2.2.1",
+    "@themost/express": "^1.5.5",
+    "@themost/sqlite": "^2.2.4-dev.1",
     "@themost/web": "^2.5.1",
     "@themost/xml": "^2.5.0"
   },
