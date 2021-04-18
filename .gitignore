@@ -63,3 +63,4 @@ typings/
 # application specific
 dist
 .idea
+.theia
