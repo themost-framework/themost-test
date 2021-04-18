@@ -17,7 +17,7 @@
             "type": "Text",
             "nullable": false,
             "primary": true,
-            "value": "javascript:return this.chars(48);"
+            "value": "javascript:return this.chars(128);"
         },
         {
             "@id": "https://themost.io/schemas/client_id",
@@ -51,7 +51,7 @@
             "title": "Refresh Token",
             "description": "Refresh tokens are issued to the client by the authorization server and are used to obtain a new access token when the current access token becomes invalid or expires.",
             "type": "Text",
-            "value": "javascript:return this.chars(48);"
+            "value": "javascript:return this.chars(128);"
         },
         {
             "@id": "https://themost.io/schemas/scope",

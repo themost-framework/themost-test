@@ -17,7 +17,6 @@ import {
 import passport from 'passport';
 import BearerStrategy from 'passport-http-bearer';
 const User = require('../models/user-model');
-
 // noinspection JSUnusedGlobalSymbols
 /**
  *
@@ -107,7 +106,9 @@ function authRouter() {
             Args.check(validateUser,
                 new HttpUnauthorizedError('Invalid user credentials'));
             //get expiration timeout
-            const expirationTimeout = parseInt(req.context.application.getConfiguration().getSourceAt('auth/timeout') || 480, 10)*60*1000;
+            const expirationTimeout = parseInt(req.context.application.getConfiguration().getSourceAt('auth/timeout') || 60, 10)*60*1000;
+            const secret = req.context.application.getConfiguration().getSourceAt('settings/crypto/key');
+            const expirationTimeoutSeconds = parseInt(expirationTimeout / 1000);
             //calculate expiration time
             const expires = new Date().getTime() + expirationTimeout;
             //create new token or update an existing one
@@ -231,12 +232,94 @@ function authRouter() {
 
     });
 
-    router.get('/login', function getLogin(req, res) {
-        return res.status(405).send('Interactive login method not allowed by test api server');
+    router.get('/login', async function getLogin(req, res) {
+         const client_id = req.query.client_id;
+         const redirect_uri = req.query.redirect_uri || '/';
+         if (client_id == null) {
+             // redirect with default test client_id
+             return res.redirect(`login?client_id=9165351833584149&scope=profile&redirect_uri=${redirect_uri}`);
+         }
+         res.render('login', { title: 'test api server', error: null });
     });
 
-    router.get('/logout', function getLogout(req, res) {
-        return res.status(405).send('Interactive logout method not allowed by test api server');
+    router.post('/login', async function postLogin(req, res) {
+        try {
+            // get client_id
+            const client_id = req.query.client_id;
+            Args.notEmpty(client_id, 'Client application');
+            // get client_id
+            const redirect_uri = req.query.redirect_uri;
+            Args.notEmpty(redirect_uri, 'Redirect URI');
+            // validate user name and password
+            const username = req.body.username;
+            Args.notEmpty(username, 'Username');
+            Args.notEmpty(req.body.password, 'Password');
+            
+            const client = await req.context.model('AuthClient').where('client_id').equal(client_id)
+                .silent().getItem();
+            Args.check(client != null, new HttpUnauthorizedError('Invalid client.'));
+            const validateUser = await User.validateUser(req.context, username, req.body.password);
+            Args.check(validateUser,
+                new HttpUnauthorizedError('Wrong user name or bad password'));
+            const scope = req.query.scope || 'profile';
+            //get expiration timeout
+            const expirationTimeout = parseInt(req.context.application.getConfiguration().getSourceAt('auth/timeout') || 60, 10)*60*1000;
+            const expirationTimeoutSeconds = parseInt(expirationTimeout / 1000);
+            const secret = req.context.application.getConfiguration().getSourceAt('settings/crypto/key');
+            //calculate expiration time
+            const expires = new Date().getTime() + expirationTimeout;
+            //create new token or update an existing one
+            let token = await req.context.model('AccessToken')
+                .where('client_id').equal(client_id)
+                .and('user_id').equal(username)
+                .and('scope').equal(scope)
+                .and('expires').lowerOrEqual(new Date())
+                .silent()
+                .getItem();
+            if (token) {
+                token.expires = new Date(expires);
+            } else {
+                token = {
+                    client_id: client_id,
+                    user_id: username,
+                    scope: scope,
+                    expires: new Date(expires)
+                };
+            }
+            await req.context.model('AccessToken').silent().save(token);
+            // and redirect
+            const state = req.query.state;
+            if (state) {
+                return res.redirect(`${redirect_uri}?access_token=${token.access_token}&scope=${scope}&refresh_token=${token.refresh_token}&state=${state}`);
+            }
+            return res.redirect(`${redirect_uri}?access_token=${token.access_token}&scope=${scope}&refresh_token=${token.refresh_token}`);
+        } catch(err) {
+            res.render('login', { title: 'test api server', error: err });
+        }
+        
+    });
+
+    router.get('/logout', async function getLogout(req, res, next) {
+        try {
+            const authorizationHeader = req.header('Authorization');
+            Args.check(authorizationHeader, new HttpUnauthorizedError('Missing client credentials.'));
+            let match = /^Bearer\s(.*?)$/i.exec(authorizationHeader);
+            Args.check(match != null, new HttpBadRequestError('Invalid authorization header.'));
+            let access_token = match[1];
+            const continue_uri = req.query.continue;
+            let token = await req.context.model('AccessToken').where('access_token').equal(access_token)
+                .silent().getItem();
+            Args.check(token != null, new HttpBadRequestError('Invalid token.'));
+            token.expires = new Date();
+            await req.context.model('AccessToken').silent().save(token);
+            if (continue_uri) {
+                res.redirect(continue_uri);
+            }
+            return res.status(204).send();
+        } catch (err) {
+            return next(err);
+        }
+        
     });
 
     return router;
