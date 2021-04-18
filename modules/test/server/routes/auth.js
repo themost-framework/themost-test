@@ -17,7 +17,6 @@ import {
 import passport from 'passport';
 import BearerStrategy from 'passport-http-bearer';
 const User = require('../models/user-model');
-import jwt from 'jsonwebtoken';
 // noinspection JSUnusedGlobalSymbols
 /**
  *
@@ -122,16 +121,12 @@ function authRouter() {
                 .getItem();
             if (token) {
                 token.expires = new Date(expires);
-                token.access_token = jwt.sign(body.username, secret);
-                token.refresh_token = jwt.sign(body.username, secret);
             }
             else {
                 token = {
                     client_id: body.client_id,
                     user_id: body.username,
                     scope: body.scope,
-                    access_token: jwt.sign(body.username, secret),
-                    refresh_token: jwt.sign(body.username, secret),
                     expires: new Date(expires)
                 };
             }
@@ -283,19 +278,14 @@ function authRouter() {
                 .getItem();
             if (token) {
                 token.expires = new Date(expires);
-                token.access_token = jwt.sign(username, secret);
-                token.refresh_token = jwt.sign(username, secret);
             } else {
                 token = {
                     client_id: client_id,
                     user_id: username,
-                    access_token: jwt.sign(username, secret),
-                    refresh_token: jwt.sign(username, secret),
                     scope: scope,
                     expires: new Date(expires)
                 };
             }
-            // save token
             await req.context.model('AccessToken').silent().save(token);
             // and redirect
             const state = req.query.state;
