@@ -309,8 +309,27 @@ function authRouter() {
         
     });
 
-    router.get('/logout', function getLogout(req, res) {
-        return res.status(405).send('Interactive logout method not allowed by test api server');
+    router.get('/logout', async function getLogout(req, res, next) {
+        try {
+            const authorizationHeader = req.header('Authorization');
+            Args.check(authorizationHeader, new HttpUnauthorizedError('Missing client credentials.'));
+            let match = /^Bearer\s(.*?)$/i.exec(authorizationHeader);
+            Args.check(match != null, new HttpBadRequestError('Invalid authorization header.'));
+            let access_token = match[1];
+            const continue_uri = req.query.continue;
+            let token = await req.context.model('AccessToken').where('access_token').equal(access_token)
+                .silent().getItem();
+            Args.check(token != null, new HttpBadRequestError('Invalid token.'));
+            token.expires = new Date();
+            await req.context.model('AccessToken').silent().save(token);
+            if (continue_uri) {
+                res.redirect(continue_uri);
+            }
+            return res.status(204).send();
+        } catch (err) {
+            return next(err);
+        }
+        
     });
 
     return router;
