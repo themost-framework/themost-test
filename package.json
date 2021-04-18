@@ -15,6 +15,7 @@
     "lint": "eslint modules/test/server"
   },
   "devDependencies": {
+<<<<<<< HEAD
     "@themost/common": "^2.5.0",
     "@themost/data": "^2.5.0",
     "@themost/query": "^2.5.0",
@@ -37,6 +38,23 @@
     "@babel/runtime": "^7.9.2",
     "@themost/cli": "^2.4.5",
     "@themost/common": "^2.5.0",
+=======
+    "@babel/cli": "^7.13.14",
+    "@babel/core": "^7.7.5",
+    "@babel/plugin-proposal-class-properties": "^7.7.4",
+    "@babel/plugin-proposal-decorators": "^7.7.4",
+    "@babel/plugin-proposal-export-default-from": "^7.7.4",
+    "@babel/plugin-proposal-export-namespace-from": "^7.7.4",
+    "@babel/plugin-transform-async-to-generator": "^7.7.4",
+    "@babel/plugin-transform-modules-commonjs": "^7.7.5",
+    "@babel/plugin-transform-strict-mode": "^7.7.4",
+    "@babel/plugin-transform-typeof-symbol": "^7.7.4",
+    "@babel/preset-env": "^7.7.6",
+    "@babel/register": "^7.7.4",
+    "@babel/runtime": "^7.7.6",
+    "@themost/cli": "^2.5.6",
+    "@themost/common": "^2.5.5",
+>>>>>>> 84c0ea8f7b1eb5e46f8b3bb57ce85b8327ca64e2
     "@themost/data": "^2.5.0",
     "@themost/express": "^1.5.3",
     "@themost/query": "^2.5.0",
