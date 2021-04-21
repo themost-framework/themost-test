@@ -1,6 +1,6 @@
 {
   "name": "@themost/test",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "MOST Web Framework Test Api Server",
   "repository": "https://github.com/themost-framework/themost-test.git",
   "author": "Kyriakos Barbounakis<k.barbounakis@gmail.com>",
@@ -22,6 +22,7 @@
     "@types/temp": "^0.8.34"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "debug": "~2.6.9",
     "ejs": "~2.5.7",
     "ejs-locals": "^1.0.2",

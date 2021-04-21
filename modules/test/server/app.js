@@ -9,6 +9,7 @@ import { ExpressDataApplication, serviceRouter, dateReviver, ExpressDataContext 
 import {indexRouter} from './routes/index';
 import temp from 'temp';
 import fs from 'fs';
+import cors from 'cors';
 
 function getApplication() {
   const config = require('./config/app.json');
@@ -41,6 +42,10 @@ function getApplication() {
    * @type {Express}
    */
   let app = express();
+
+// enable CORS
+app.use(cors({ origin:true, credentials: true }));
+
 
 // use ejs-locals for all ejs templates
   app.engine('ejs', engine);
